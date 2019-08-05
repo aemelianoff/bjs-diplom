@@ -30,7 +30,7 @@ constructor({ username, name: {firstName, lastName}, password }) {
     }
 
      convertMoney({fromCurrency, targetCurrency, targetAmount}, callback) {
-        return ApiConnector.convertMoney({fromCurrency: 'EUR', targetCurrency: 'NETCOIN', targetAmount}, (err, data) => {
+        return ApiConnector.convertMoney({fromCurrency, targetCurrency, targetAmount}, (err, data) => {
             console.log(`Converting ${fromCurrency} to ${targetAmount} ${targetCurrency}`);
             callback(err, data);
         });
@@ -53,7 +53,7 @@ function getStocks(callback) {
 
 
 function main() {
-   const Ivan = new Profile({
+const Ivan = new Profile({
                 username: 'ivan',
                 name: { firstName: 'Ivan', lastName: 'Chernyshev' },
                 password: 'ivanspass',
