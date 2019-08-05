@@ -53,39 +53,67 @@ function getStocks(callback) {
 
 
 function main() {
-    getStocks((err, data) => {
-        if(err) {
-                console.error('Error during getting stocks');
-        } else {
-               let currency = data   
-           // console.log(currency);
-        }
-    });  
-const Ivan = new Profile({
+   const Ivan = new Profile({
                 username: 'ivan',
                 name: { firstName: 'Ivan', lastName: 'Chernyshev' },
                 password: 'ivanspass',
 });
-Ivan.createUser((err, data) => {
+const Navi = new Profile({
+                username: 'navi',
+                name: { firstName: 'navi', lastName: 'Vehsynrehc' },
+                password: 'navispass',
+});
+
+getStocks((err, data) => {
     if(err) {
+        console.error('Error during getting stocks');
+    } else {
+        let currencyConvert = data   
+        //console.log(currencyConvert);
+    
+    Ivan.createUser((err, data) => {
+        if(err) {
             console.error(`Error during creating ivan`);
-    } else {
+        } else {
             console.log(`${Ivan.username} is created!`);
-   }
-});
-Ivan.performLogin((err, data) => {
-    if(err) {
-            console.error(`Error during authorizing ivan`);
-    } else {
-           console.log(`${Ivan.username} is authorized!`);
-}
-});
-Ivan.addMoney({ currency: 'RUB', amount: 100 }, (err, data) => {
-    if (err) {
-             console.error('Error during adding money to Ivan');
-    } else {
-            console.log(`Added 100 RUB to ${Ivan.username}`);
-   }
-});        
+            
+            Navi.createUser((err, data) => {
+                if(err) {
+                    console.error(`Error during creating Navi`);
+                    } else {
+                        console.log(`${Navi.username} is created!`);
+                        
+                        Ivan.performLogin((err, data) => {
+                            if(err) {
+                                console.error(`Error during authorizing Ivan`);
+                                } else {
+                                    console.log(`${Ivan.username} is authorized!`);
+                                    
+                                    Ivan.addMoney({ currency: 'RUB', amount: 1000 }, (err, data) => {
+                                        if (err) {
+                                            console.error('Error during adding money to Ivan');
+                                        } else {
+                                            const converted = currencyConvert[99].RUB_NETCOIN * data.wallet.RUB;
+                                            //console.log(converted);
+                                            console.log(`Added 1000 RUB to ${Ivan.username}`);
+                                            
+                                            Ivan.convertMoney({fromCurrency: 'RUB', targetCurrency: 'NETCOIN', targetAmount: converted}, (err, data) => {
+                                                if (err) {
+                                                    console.error('Error during converting money');
+                                                } else {
+                                                        console.log(`Converted to coins`, data);
+                                                        const transfer = data.wallet.NETCOIN;
+                                                        Ivan.transferMoney({to: Navi.username, amount: transfer}, (err, data) => {
+                                                            if(err) {
+                                                                console.error('Error during transfer money');
+                                                            } else {
+                                                                console.log(`Navi has got ${transfer} NETCOINS`);
+                                                        }});
+                                            }}); 
+                                    }});                                  
+                        }});
+            }});
+    }});
+}});
 }
 main();
